@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>gulp-twig2php | Demo</title>
+
+	<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
+	<style>
+		@import url('https://fonts.googleapis.com/css?family=Ubuntu|Ubuntu+Mono');
+		@import url('http://use.fontawesome.com/releases/v4.7.0/css/font-awesome-css.min.css');
+		
+		@font-face {
+		  font-family: 'FontAwesome';
+		  src: url('http://use.fontawesome.com/releases/v4.7.0/fonts/fontawesome-webfont.eot');
+		  src: url('http://use.fontawesome.com/releases/v4.7.0/fonts/fontawesome-webfont.eot?#iefix') format('embedded-opentype'),
+		       url('http://use.fontawesome.com/releases/v4.7.0/fonts/fontawesome-webfont.woff2') format('woff2'),
+		       url('http://use.fontawesome.com/releases/v4.7.0/fonts/fontawesome-webfont.woff') format('woff'),
+		       url('http://use.fontawesome.com/releases/v4.7.0/fonts/fontawesome-webfont.ttf') format('truetype'),
+		       url('http://use.fontawesome.com/releases/v4.7.0/fonts/fontawesome-webfont.svg#fontawesomeregular') format('svg');
+		  font-weight: normal;
+		  font-style: normal;
+		}
+
+		html, body {
+			min-height: 100vh;
+  			height: 100%; 
+		}
+
+		body {
+			background-color: #21252B;
+			font-family: 'Ubuntu', sans-serif;
+		}
+
+		.wrapper {
+			height: 100%;
+
+
+			display: flex;
+			flex-direction: column;
+		}
+
+		main {
+			flex:1;
+
+			display: flex;
+			flex-direction: column;
+		}
+
+
+
+
+
+		.tabs {
+			flex:1;
+			display: flex;
+		}
+
+		.tab {
+			width: 50%;
+			background-color: #282C34;
+		}
+
+		.tab:last-child textarea {
+			border-left: none;
+		}
+
+
+
+		textarea {
+			width: 100%;
+			height: 100%;
+			
+			-webkit-box-sizing: border-box;
+            -moz-box-sizing: border-box;
+            box-sizing: border-box;
+			
+
+			color: #ABB2BF;
+			padding: 10px;
+
+			font-family: 'Ubuntu Mono', monospace;
+			resize:none;
+
+			border:1px solid #181A1F;
+			border-top: 4px solid #181A1F;
+			background-color: #282C34;
+			border-bottom: none;
+			
+		}
+
+		textarea:focus {
+			outline: none !important;
+			border-top-color: #568AF2;
+		
+		}
+
+		.buttons {
+			text-align: center;
+			padding-bottom: 10px;
+		}
+
+		.btn {
+			border:1px solid #181A1F;
+			border-radius: 3px;
+			background-color: rgba(56,61,72,0.8);
+			color: rgba(219,219,219,0.8);
+			padding:6px 20px;
+			display: inline-block;
+			text-decoration: none;
+		}
+
+		.btn:hover {
+			color: rgb(219,219,219);
+			background-color: rgb(56,61,72);
+		}
+
+		.console__header {
+			color:#ABB2BF;
+			font-size:0.75rem;
+			padding:10px;
+			border:1px solid #181A1F;
+			background-color: #282C34;
+			position: relative;
+		}
+
+		.console__close {
+			position: absolute;
+			right: 10px;
+
+			display: inline-block;
+    		font: normal normal normal 14px/1 FontAwesome;
+    		font-size: inherit;
+    		text-rendering: auto;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+
+            cursor: pointer;
+		}
+
+		.console__close[data-state="open"]:before {
+			content: '\f078';
+		}
+
+		.console__close[data-state="close"]:before {
+			content: '\f077';
+		}
+
+		.help {
+			color:#D7DAE0;
+			text-align: center;
+			vertical-align: center;
+			opacity: 0.8;
+		}
+
+		.console__content {
+			white-space: pre;
+			padding:10px;
+			font-size:0.8rem;
+			line-height: 1.6;
+			color:#568AF2;
+			max-height: 14vh;
+			overflow-y: auto;
+		}
+
+		::-webkit-scrollbar-button {
+			background-image:none;
+			width:7px;
+			height:0px
+		}
+
+		::-webkit-scrollbar-track {
+			background-color:transparent;
+		}
+
+		::-webkit-scrollbar-thumb {
+-webkit-border-radius: 3px;
+border-radius: 3px;
+background-color:#3C424E;
+}
+
+::-webkit-scrollbar-thumb:hover{
+background-color:#568AF2;
+}
+
+::-webkit-resizer{
+background-image:none;
+width:6px;
+height:0px
+}
+
+::-webkit-scrollbar {
+width: 4px;
+}
+
+	</style>
+</head>
+<body>
+<div class="wrapper">
+<main>
+	<div class="tabs">
+		<div class="tab"><textarea id="input" autofocus><a href="{{ row.link }}">{{ row.name }}</a></textarea></div>
+		<div class="tab">
+			<div id="help" class="help">
+				<h1>gulp-twig2php</h1>
+				<p>Compiles Twig Templates to native PHP using Twig.js</p>
+				<p><a target="_blank" class="btn" href="https://github.com/Garik-/gulp-twig2php"><i class="fa fa-github" aria-hidden="true"></i> View on GitHub</a></p>
+				<p>&nbsp;</p><h3><i class="fa fa-code" aria-hidden="true"></i> press ctrl + enter</h3>
+			</div>
+		<textarea id="output" readonly placeholder="" style="display: none"></textarea></div>
+  	</div>
+</main>
+<footer>
+<div id="console">
+	<div class="console__header">Console <span id="console_toggle" class="console__close" data-state="open"></i></span></div>
+	<div class="console__content" id="console_content"></div>
+</div>
+</footer>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twig.js/0.8.9/twig.min.js"></script>
+<script>
+
+	var module = {}, 
+		options = { debug: true },
+		_console = {
+			log:function(message) {
+				var element = document.getElementById("console_content");
+
+				if(message !== null && typeof message === 'object') {
+					message = JSON.stringify(message);
+				}
+
+				element.appendChild(document.createTextNode(message + "\n"));
+			}
+		}
+	
+	function require(name) {
+		switch(name) {
+			case 'gulp-util':
+				return _console;
+			case 'twig':
+				return Twig;
+		}
+	}	
+
+</script>
+<script src="https://rawgit.com/Garik-/gulp-twig2php/master/parser.js"></script>
+<script>
+
+var parser = module.exports,
+	input = document.getElementById("input"), 
+	output = document.getElementById("output"),
+	help = document.getElementById("help"),
+	console_toggle = document.getElementById("console_toggle"),
+	console_content = document.getElementById("console_content");
+
+
+input.onkeydown = function(e) {
+	
+	if (e.ctrlKey && e.keyCode == 13) { // Ctrl-Enter pressed
+		e.preventDefault();
+
+		output.value = parser(input.value, options);
+
+		help.style.display = 'none';
+		output.removeAttribute("style");
+  	}
+
+}
+
+
+console_toggle.onclick = function(e) {
+	e.preventDefault();
+
+	var data = console_toggle.dataset;
+
+	switch(data.state) {
+		case 'open':
+			console_content.style.display = 'none';
+			data.state = "close";
+
+			break;
+		case 'close':
+			console_content.removeAttribute("style");
+			data.state = "open";
+			break;
+	}
+	
+
+
+
+}
+</script>
+</body>
+</html>
